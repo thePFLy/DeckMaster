@@ -9,12 +9,14 @@ def main():
     match_found = False
     # Browse audio sessions
     for session in sessions:
-        # Display executed audio session
-        print(session)
+        # Get the display name of the session
+        session_name = session.Process.name() if session.Process else "System Sounds"
+        # Display the name of the session
+        print("Session Name: %s" % session_name)
         # Get "ISimpleAudioVolume" interface to adjust volume
         volume = session._ctl.QueryInterface(ISimpleAudioVolume)
         # Verify if specified audio session corresponds to Discord
-        if session.Process and session.Process.name() == "Discord.exe":
+        if session.Process and session.Process.name() == "firefox.exe":
             # Current volume value of the session
             print("volume.GetMasterVolume(): %s" % volume.GetMasterVolume())
             # Set new volume value
