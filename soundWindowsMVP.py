@@ -1,6 +1,9 @@
 from pycaw.pycaw import AudioUtilities, ISimpleAudioVolume
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
+from colorama import init, Fore
 
+# Initialisation de colorama pour la prise en charge des couleurs ANSI sur Windows
+init()
 
 class VolumeModifier:
     def __init__(self):
@@ -13,7 +16,8 @@ class VolumeModifier:
                 session_name = session_name[:-4]  # Remove the ".exe" extension
             session_volume = session.SimpleAudioVolume.GetMasterVolume()
             volume_percentage = int(session_volume * 100)
-            print("%d. %s (Volume: %d%%)" % (index + 1, session_name, volume_percentage))
+            volume_color = self.get_volume_color(session_volume)
+            print("%d. %s (Volume: %s%d%%%s)" % (index + 1, session_name, volume_color, volume_percentage, Fore.RESET))
 
     def select_session(self):
         while True:
@@ -49,7 +53,17 @@ class VolumeModifier:
         volume.SetMasterVolume(new_volume / 100, None)
         updated_volume = volume.GetMasterVolume()
         volume_percentage = int(updated_volume * 100)
-        print("Volume updated to: %d%%" % volume_percentage)
+        volume_color = self.get_volume_color(updated_volume)
+        print("Volume updated to: %s%d%%%s" % (volume_color, volume_percentage, Fore.RESET))
+
+    @staticmethod
+    def get_volume_color(volume):
+        if volume <= 0.3:
+            return Fore.GREEN  # Vert
+        elif volume <= 0.7:
+            return Fore.YELLOW  # Jaune
+        else:
+            return Fore.RED  # Rouge
 
     def run(self):
         self.list_active_sessions()
