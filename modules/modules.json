@@ -1,0 +1,17 @@
+{
+  "spotify": {
+    "version": 1,
+    "active": true,
+    "initialized": false
+  },
+  "windows": {
+    "version": 1,
+    "active": false,
+    "initialized": false
+  },
+  "youtube": {
+    "version": 1,
+    "active": false,
+    "initialized": false
+  }
+}
