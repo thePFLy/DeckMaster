@@ -2,8 +2,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
 # Credentials and callback url declaration
-client_id = "client_id"
-client_secret = "client_secret"
+client_id = "c7326ad68d9b49a79609690cfc6f6a40"
+client_secret = "5e16432fdaef44268c64f3f0739eeffa"
 redirect_uri = "http://localhost:8000"
 
 # var who avoir a loop more of one time while the same tracks is played
