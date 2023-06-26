@@ -3,8 +3,8 @@ from googleapiclient.errors import HttpError
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-client_id = '637454297514-dcdbbss9q462qte62jaokigpucq1kflg.apps.googleusercontent.com'
-client_secret = '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'
+client_id = ''
+client_secret = ''
 redirect_uri = 'http://localhost:8000'
 
 # Configuration de la portée d'accès
@@ -12,7 +12,7 @@ scopes = ['https://www.googleapis.com/auth/youtube.force-ssl']
 
 # Obtention du jeton d'accès
 flow = InstalledAppFlow.from_client_secrets_file(
-    'youtube/client_secret_637454297514-dcdbbss9q462qte62jaokigpucq1kflg.apps.googleusercontent.com.json',
+    'youtube/client_secret.json',
     scopes=scopes
 )
 credentials = flow.run_local_server(port=8080)
