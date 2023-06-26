@@ -1,3 +1,14 @@
+"""
+This script allows modifying the volume of active audio sessions.
+
+Needed:
+    - pycaw: Python bindings for Core Audio Windows API
+    - argparse: Library for parsing command-line arguments
+    - colorama: Cross-platform library for colored terminal text
+
+Usage:
+    - View help arg
+"""
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from pycaw.pycaw import AudioUtilities
 from colorama import init, Fore
