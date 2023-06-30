@@ -13,6 +13,7 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from time import sleep
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
+from keyboard import on_press
 
 
 class Status:
@@ -46,16 +47,28 @@ class Status:
                 client_id=self.client_id,
                 client_secret=self.client_secret,
                 redirect_uri=self.redirect_uri,
-                scope="user-read-currently-playing"
+                scope=["user-read-currently-playing", "user-read-private"]
             )
         )
+        self.account = self.spotify.current_user()
         self.data = None
         self.main()
+
+    def action(self, event):
+        """
+        All actions will be played here. For the moment, event wait a letter (use with keyboard), but in next releases,
+        we gona use id or this kind of things.
+        """
+        if self.spotify.current_user()['product'] == 'Premium' and event.name == 'p':
+            self.spotify.pause_playback()
 
     def update_data(self):
         """
         Update the self.data variable with the current track's status.
         """
+        while self.spotify.current_user_playing_track() is None:
+            print("DeckMaster listening for update...")
+            sleep(5)
         self.data = self.spotify.current_user_playing_track()
         return self.data
 
@@ -63,10 +76,15 @@ class Status:
         """
         Main method to continuously update and print the current track's status.
         """
+        print(f"User: {self.account['display_name']}")
+        print(f"Image: {self.account['images'][0]['url']}")
+        print(f"Type of account: {'Free' if self.account['product'] == 'free' else 'Premium'}")
+        print("--------------------------------------\n\n")
         while True:
             sleep(2)
             self.update_data()
             if self.last_title != self.data['item']['name']:
+                on_press(self.action)
                 self.last_title = self.data['item']['name']
                 release_date = str(self.data['item']['album']['release_date'])
                 release_year = release_date.split('-', maxsplit=1)[0]
@@ -75,9 +93,9 @@ class Status:
                     f"Artist: {self.data['item']['artists'][0]['name']}\n"
                     f"Cover: {self.data['item']['album']['images'][0]['url']}\n"
                     f"Release Year: {release_year}\n"
-                    f"--------------------------------------\n"
+                    f"Length: {(self.data['item']['duration_ms'] // 1000) // 60}:{(self.data['item']['duration_ms'] // 1000) % 60}"
+                    f"\n\n--------------------------------------\n\n"
                 )
-
 
 if __name__ == '__main__':
     parser = ArgumentParser(
