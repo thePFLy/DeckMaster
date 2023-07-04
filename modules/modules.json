@@ -2,7 +2,7 @@
   "spotify": {
     "version": 1,
     "active": true,
-    "initialized": false
+    "initialized": true
   },
   "windows": {
     "version": 1,
@@ -10,6 +10,11 @@
     "initialized": false
   },
   "youtube": {
+    "version": 1,
+    "active": false,
+    "initialized": false
+  },
+  "plex": {
     "version": 1,
     "active": false,
     "initialized": false

@@ -13,7 +13,7 @@ class Credentials:
 
     def set(self, key, value):
         """
-        Write a value in the credential file
+        Write a value in the credential file based on the key and the value
         """
         self.values[key] = value
         with open(f'modules/{self.module}/credentials.json', 'w') as file:

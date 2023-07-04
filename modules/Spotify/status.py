@@ -9,7 +9,6 @@ Needed:
 Usage:
     - View help arg
 """
-from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from time import sleep
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
@@ -96,14 +95,3 @@ class Status:
                     f"Length: {(self.data['item']['duration_ms'] // 1000) // 60}:{(self.data['item']['duration_ms'] // 1000) % 60}"
                     f"\n\n--------------------------------------\n\n"
                 )
-
-if __name__ == '__main__':
-    parser = ArgumentParser(
-        formatter_class=RawDescriptionHelpFormatter,
-        description='''
-        Help description\n
-        ----------------------\n
-        1. Create a Spotify developer app\n
-        2. Load secrets\n
-        3. Get status\n
-        ''')

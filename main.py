@@ -1,8 +1,7 @@
 from core.modules import Modules
 from importlib import import_module
-from modules.spotify import status
 
-#Load all active modules
+# Load all active modules
 modules = Modules()
 modules.list_modules
 print(modules.list_modules)
