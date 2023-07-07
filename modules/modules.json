@@ -1,7 +1,7 @@
 {
   "spotify": {
     "version": 1,
-    "active": true,
+    "active": false,
     "initialized": true
   },
   "windows": {
@@ -16,7 +16,7 @@
   },
   "plex": {
     "version": 1,
-    "active": false,
-    "initialized": false
+    "active": true,
+    "initialized": true
   }
 }

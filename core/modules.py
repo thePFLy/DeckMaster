@@ -23,7 +23,8 @@ class Modules:
 
     def initialized(self, module):
         """
-        Some modules need to be configured. If it's not the case, and, if it's the first time you call the module.
+        Some modules need to be configured. If it's not the case, and, if it's the first time you call the module, the init
+        file will be runned and launch the setting mode.
         """
         with open('modules/modules.json', 'r', encoding='utf-8') as modules:
             modules = loads(modules.read())[module]
@@ -32,7 +33,7 @@ class Modules:
     def set_initialized(self, module):
         """
         Once module is configured, this will be set as initialized, so, the next time you will run the module,
-        you will not have to set credentials again
+        you will not have to set credentials again or fill some settings.
         """
         with open('modules/modules.json', 'r') as file:
             temp = loads(file.read())

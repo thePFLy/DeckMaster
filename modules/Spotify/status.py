@@ -58,8 +58,13 @@ class Status:
         All actions will be played here. For the moment, event wait a letter (use with keyboard), but in next releases,
         we gona use id or this kind of things.
         """
-        if self.spotify.current_user()['product'] == 'Premium' and event.name == 'p':
-            self.spotify.pause_playback()
+        if event.name == 'p':
+            need_premium = "You have to be Premium for this action"
+
+            if self.spotify.current_user()['product'] == 'Premium':
+                self.spotify.pause_playback()
+            else:
+                print(need_premium)
 
     def update_data(self):
         """
@@ -79,6 +84,7 @@ class Status:
         print(f"Image: {self.account['images'][0]['url']}")
         print(f"Type of account: {'Free' if self.account['product'] == 'free' else 'Premium'}")
         print("--------------------------------------\n\n")
+        print()
         while True:
             sleep(2)
             self.update_data()
