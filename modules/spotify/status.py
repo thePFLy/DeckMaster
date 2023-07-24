@@ -106,6 +106,9 @@ class Status:
         """
         Update the self.data variable with the current track's status.
         """
+        while self.spotify.current_user_playing_track() is None:
+            print('No metadata has been got.\nNew try in 5 seconds...')
+            sleep(5)
         self.data = self.spotify.current_user_playing_track()
         return self.data
 
