@@ -1,9 +1,8 @@
 class Playlists:
-    def __init__(self, arg, data, spotify, commands, account):
+    def __init__(self, arg, data, spotify, account):
         self.arg = arg
         self.spotify = spotify
         self.data = data
-        self.commands = commands
         self.playlist_name = None
         self.account = account
 
@@ -14,7 +13,7 @@ class Playlists:
             elif self.arg[0] == 'playlist' and self.arg[1] in ['create', 'delete', 'list']:
                 if self.arg[1] == 'create':
                     if len(self.arg) < 3:
-                        print("You need to give a name to the playlist to create.\nPlease use: help playlist !")
+                        print("You need to give a name to the playlist to create.\n")
                         return None
                     else:
                         self.playlist_name = ' '.join(self.arg[2:])
@@ -29,9 +28,9 @@ class Playlists:
                 return None
         else:
             if self.arg == 'favorite':
-                print(f'{arg} need as second argument a playlist name.\nPlease use: help favorite')
+                print(f'{arg} need as second argument a playlist name.\n')
             elif self.arg == 'playlist':
-                print(f'{arg} need as second argument an action instruction.\nPlease use: help playlist')
+                print(f'{arg} need as second argument an action instruction.\n')
 
     def playlist(self, playlist_name):
         response = {
