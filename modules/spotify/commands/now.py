@@ -20,11 +20,11 @@ class Now:
             }
         }
 
-        print(
-            f"Title: {self.data['item']['name']}\n"
-            f"Artist: {self.artists}\n"
-            f"Cover: {self.data['item']['album']['images'][0]['url']}\n"
-            f"Release Year: {calculated_datas['year']}\n"
-            f"Length: {calculated_datas['duration']['minutes']}:{calculated_datas['duration']['seconds']}\n"
-            f"Progress: {calculated_datas['progress']['minutes']}:{calculated_datas['progress']['seconds']}"
-        )
+        return {
+            "title": self.data['item']['name'],
+            "artist": self.artists,
+            "url_cover": self.data['item']['album']['images'][0]['url'],
+            "date_release": calculated_datas['year'],
+            "length": f"{calculated_datas['duration']['minutes']}:{calculated_datas['duration']['seconds']}",
+            "progress": f"{calculated_datas['progress']['minutes']}:{calculated_datas['progress']['seconds']}"
+        }

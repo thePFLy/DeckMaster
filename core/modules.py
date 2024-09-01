@@ -1,68 +1,59 @@
-from os.path import exists, getsize
 from os import scandir
-from importlib import import_module
 from json import dumps, load
+from os.path import exists
+from importlib import import_module
 
 
 class Modules:
-    def __init__(self, module: str = None):
-        self.module = module
-        self.modules = []
-        self.temp_credentials = {}
-
-    def is_initialized(self, module: str = None) -> bool:
-        """
-        It check if the module have a credential file, with your datas, etc..c
-        """
-        m = self.module if self.module is not None else module
-        if exists(rf"modules/{m}/credentials.json"):
-            return getsize(rf"modules/{m}/credentials.json") > 0
-        else:
-            return False
+    def __init__(self):
+        self.modules_list = []
+        self.modules_list_error = []
+        self.module = None
 
     def load(self) -> None:
         """
-        dynamicaly get all modules names and launch it when we will feel better...
+        This method permit to scan the module directory and detect all modules...
+        It use the scandir method to scan all module's folder name and add it to the list in self.modules_list...
         """
-        with scandir("modules") as it:
-            for entry in it:
-                if entry.is_dir():
-                    self.modules.append(
-                        {
+        with scandir("modules") as modules_library:
+            for entry in modules_library:
+                if entry.is_dir() and exists(f"modules/{entry.name}/__init__.py"):
+                    self.module = entry.name
+                    setup_import = import_module(f"modules.{entry.name}.setup")
+                    if getattr(setup_import, "try_init")(self.credentials(), setup_mode=True):
+                        self.modules_list.append({
                             "name": entry.name,
-                            "initialized": self.is_initialized(module=entry.name)
-                        }
-                    )
+                            "path": f"modules.{entry.name}"
+                        })
+                    else:
+                        self.modules_list_error.append(entry.name)
+                        print(f"Le module {entry.name} présente des problèmes lors de la fonction try_init()")
 
-        if len(self.modules) > 1:
-            print("Select a module to run:")
-            index = 0
-            for [index, name] in enumerate(self.modules, 1):
-                print(f"{str(index).zfill(2)}. {name['name']}")
-            while int(index) < 1:
-                index = input(">> ")
-            module = import_module(rf"modules.{self.modules[int(index)]['name']}")
-            module.run(parameters=self.modules[int(index)])
-        elif len(self.modules) == 0:
-            print("No modules detected")
-            exit()
-        else:
-            module = import_module(rf"modules.{self.modules[0]['name']}")
-            module.run(parameters=self.modules[0])
+    def modules_names(self):
+        tab = []
+        for module in self.modules_list:
+            tab.append(module["name"])
+        return tab
 
-    def set_credential(self, key: str, value: str) -> None:
-        """
-        """
-        self.temp_credentials[key] = value
+    def set_key(self, key: str, value: str):
+        with open(file=f"config/{self.module}.json", mode="r") as file:
+            content = load(file)
+        content[key] = value
+        with open(file=f"config/{self.module}.json", mode="w") as file:
+            file.write(dumps(content, indent=2))
+        print(f"La clé {key} ayant pour valeur {value} a été sauvegardée...")
 
-    def save(self):
-        with open(rf'modules/{self.module}/credentials.json', 'a') as credential:
-            credential.write(dumps(self.temp_credentials, indent=2))
-
-    def empty_credential(self) -> None:
-        with open(rf'modules/{self.module}/credentials.json', 'w') as credential:
-            credential.write('')
-
-    def get_credential(self, key: str) -> str:
-        with open(f"modules/{self.module}/credentials.json", "r") as credential:
-            return load(credential)[key]
+    def credentials(self, key: str = None) -> dict or str:
+        if not exists(f"config/{self.module}.json"):
+            with open(file=f"config/{self.module}.json", mode="w") as file:
+                file.write(dumps({}, indent=2))
+        with open(file=f"config/{self.module}.json", mode="r") as file:
+            if key is None:
+                return load(file)
+            elif load(file)[key] != '' and key in load(file):
+                return load(file)[key]
+            else:
+                value = input(
+                    "La clé {key} n'existe pas ou n'as pas de valeur dans la configuration, veuillez y définir sa valeur: ")
+                self.set_key(key=key, value=value)
+                return value
