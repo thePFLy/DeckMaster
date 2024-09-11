@@ -1,19 +1,13 @@
 from spotipy import Spotify, SpotifyOAuth
+from core.system import System
 
 
-def setup():
-    print('Welcome to the initial setup of Spotify for DeckMaster')
-    print(
-        "Go to https://developer.spotify.com/dashboard for creating an app.\n"
-        "Also don't forget to set a callback_url !\n"
-        "For more facility, set http://localhost:8000"
-    )
-    print('----------------------------')
+def trad(key: str):
+    System().show_traduction(key=key, module="spotify")
 
 
-def try_init(credentials: dict, setup_mode: bool = False) -> bool:
+def try_init(credentials: dict) -> bool:
     try:
-        setup() if setup_mode else None
         Spotify(
             auth_manager=SpotifyOAuth(
                 client_id=credentials["client_id"],
@@ -34,3 +28,7 @@ def try_init(credentials: dict, setup_mode: bool = False) -> bool:
         return True
     except:
         return False
+
+
+def setup():
+    return trad(key="setup_message")

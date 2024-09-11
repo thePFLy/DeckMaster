@@ -1,0 +1,3 @@
+{
+  "setup_message": "Welcome to the initial setup of Spotify for ReDeck\nGo to https://developer.spotify.com/dashboard for creating an app.\nAlso don't forget to set a callback_url !\nFor more facility, set http://localhost:8000\nNext, define credentials with the query /spotify/set_credentials... Read /docs for more information..."
+}

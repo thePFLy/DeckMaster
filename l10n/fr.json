@@ -1,0 +1,17 @@
+{
+  "redeck_desc": "API Officielle de ReDeck. Cette version vous permettra de manipuler differents modules et quelques fonctionnlitées systèmes...",
+  "load_module_name": "Activer un module",
+  "load_module_desc": "Requête permettant d'activer un module. Le méchanisme qui gère la gestion de chargement est core.",
+  "information_core_name": "Informations sur ReDeck",
+  "information_core_desc": "Renvoie quelques informations intéressantes sur le projet !",
+  "information_core_author": "Auteur",
+  "information_core_version": "Version",
+  "information_core_description": "Description",
+  "information_core_thanks": "Remerciements",
+  "restart_name": "Redémarrer ReDeck",
+  "restart_desc": "Recherche du PID Python pour kill le process. ReDeck étant reglé via systemctl, il est prévu que ce dernier relance ReDeck si le service était innactif !",
+  "is_imported_name": "Rechercher si le module est déjà chargé",
+  "is_imported_desc": "Vérifie si le module est déjà importé afin !",
+  "show_route_name": "Vérifier les routes de FastAPI",
+  "show_route_desc": "Permet de lister les routes ouvertes par FastAPI et vérifier après import !"
+}

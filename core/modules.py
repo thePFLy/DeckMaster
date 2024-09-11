@@ -1,59 +1,63 @@
-from os import scandir
 from json import dumps, load
-from os.path import exists
 from importlib import import_module
+from os import scandir
+from sys import modules
 
 
 class Modules:
     def __init__(self):
-        self.modules_list = []
-        self.modules_list_error = []
-        self.module = None
+        self.loaded_modules = []
 
-    def load(self) -> None:
-        """
-        This method permit to scan the module directory and detect all modules...
-        It use the scandir method to scan all module's folder name and add it to the list in self.modules_list...
-        """
-        with scandir("modules") as modules_library:
-            for entry in modules_library:
-                if entry.is_dir() and exists(f"modules/{entry.name}/__init__.py"):
-                    self.module = entry.name
-                    setup_import = import_module(f"modules.{entry.name}.setup")
-                    if getattr(setup_import, "try_init")(self.credentials(), setup_mode=True):
-                        self.modules_list.append({
-                            "name": entry.name,
-                            "path": f"modules.{entry.name}"
-                        })
-                    else:
-                        self.modules_list_error.append(entry.name)
-                        print(f"Le module {entry.name} présente des problèmes lors de la fonction try_init()")
+    def list_modules_folder(self):
+        list_modules = []
+        for module in scandir("modules/"):
+            list_modules.append(module.name)
+        return list_modules
 
-    def modules_names(self):
-        tab = []
-        for module in self.modules_list:
-            tab.append(module["name"])
-        return tab
+    def is_module_imported(self, module: str, log: bool = False):
+        result = []
+        for module_name in modules:
+            if module in module_name:
+                result.append(module_name)
+        if log:
+            return {
+                "response": len(result) > 0,
+                "result": result
+            }
+        else:
+            return len(result) > 0
 
-    def set_key(self, key: str, value: str):
-        with open(file=f"config/{self.module}.json", mode="r") as file:
+    def load(self, module: str):
+        if self.is_module_imported(module=module):
+            return "MODULE_ALREADY_LOADED"
+        elif module in self.list_modules_folder():
+            setup = import_module(f"modules.{module}.setup")
+            if getattr(setup, "try_init")(self.credentials(module="spotify")):
+                import_module(f"modules.{module}")
+                self.loaded_modules.append(module)
+                return "LOADED"
+            else:
+                print("????")
+                return getattr(setup, "setup")
+        else:
+            return "MODULE_NOT_FOUND"
+
+    def unload(self, module: str):
+        self.table_modules["disabled"].remove(module)
+
+    def set_key(self, module: str, key: str, value: str):
+        with open(file=f"config/{module}.json", mode="r") as file:
             content = load(file)
         content[key] = value
-        with open(file=f"config/{self.module}.json", mode="w") as file:
+        with open(file=f"config/{module}.json", mode="w") as file:
             file.write(dumps(content, indent=2))
-        print(f"La clé {key} ayant pour valeur {value} a été sauvegardée...")
+        return "KEY_HAS_BEEN_SET"
 
-    def credentials(self, key: str = None) -> dict or str:
-        if not exists(f"config/{self.module}.json"):
-            with open(file=f"config/{self.module}.json", mode="w") as file:
-                file.write(dumps({}, indent=2))
-        with open(file=f"config/{self.module}.json", mode="r") as file:
+    def credentials(self, module: str, key: str = None) -> dict or str:
+        with open(file=f"config/{module}.json", mode="r") as file:
             if key is None:
                 return load(file)
-            elif load(file)[key] != '' and key in load(file):
+            elif key in load(file) and load(file)[key] != '':
                 return load(file)[key]
             else:
-                value = input(
-                    "La clé {key} n'existe pas ou n'as pas de valeur dans la configuration, veuillez y définir sa valeur: ")
-                self.set_key(key=key, value=value)
-                return value
+                return "KEY_NOT_FOUND"

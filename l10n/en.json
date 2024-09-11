@@ -1,0 +1,17 @@
+{
+  "redeck_desc": "Official API of ReDeck. This version will allow you to manage some modules and some system tweaks...",
+  "load_module_name": "Load a module",
+  "load_module_desc": "Query that will allow to load a module. The mechanism that will allow that is from Core.",
+  "information_core_name": "Informations about ReDeck",
+  "information_core_desc": "Collect some interesting datas about ReDeck !",
+  "information_core_author": "Author",
+  "information_core_version": "Version",
+  "information_core_description": "Description",
+  "information_core_thanks": "Thanks",
+  "restart_name": "Restarting ReDeck",
+  "restart_desc": "Search the PID of the ReDeck process. Because ReDeck is managed by systemctl, ReDeck will load again if no process is detected...",
+  "is_imported_name": "Search if module is loaded",
+  "is_imported_desc": "Looking if specified module has been already loaded !",
+  "show_route_name": "Checking routes of FastAPI",
+  "show_route_desc": "Permit to list routes open by FastAPI and check after import !"
+}
