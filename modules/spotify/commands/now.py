@@ -1,13 +1,15 @@
 class Now:
-    def __init__(self, spotify, artists, data):
+    def __init__(self, spotify):
         self.spotify = spotify
-        self.artists = artists
-        self.data = data
-        self.now
+        self.data = spotify.current_user_playing_track()
 
-    @property
+    def get_artists(self):
+        artists = []
+        for artist in self.data['item']['artists']:
+            artists.append(artist['name'])
+        return ', '.join(artists)
+
     def now(self):
-        print("\033[4mNow:\033[0m")
         calculated_datas = {
             "year": str(self.data['item']['album']['release_date']).split('-', maxsplit=1)[0],
             "duration": {
@@ -22,7 +24,7 @@ class Now:
 
         return {
             "title": self.data['item']['name'],
-            "artist": self.artists,
+            "artist": self.get_artists(),
             "url_cover": self.data['item']['album']['images'][0]['url'],
             "date_release": calculated_datas['year'],
             "length": f"{calculated_datas['duration']['minutes']}:{calculated_datas['duration']['seconds']}",

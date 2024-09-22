@@ -1,3 +1,17 @@
 {
-  "setup_message": "Bienvenue pour l'initalisation de Spotify pour ReDeck\nAllez sur https://developer.spotify.com/dashboard pour créer une application.\nN'oubliez pas d'également définir la callback_url !\nPour plus de facilité, définissez http://localhost:8000 comme callback_url\nEnsuite définissez les crédentials avec la requête /spotify/set_credentials... Regardez la doc via /docs"
+  "setup_message": "Bienvenue pour l'initalisation de Spotify pour ReDeck\nAllez sur https://developer.spotify.com/dashboard pour créer une application.\nN'oubliez pas d'également définir la callback_url !\nPour plus de facilité, définissez http://localhost:8000 comme callback_url\nEnsuite définissez les crédentials avec la requête /spotify/set_credentials... Regardez la doc via /docs",
+  "set_credentials_name": "Re-définir les credentials Spotify",
+  "set_credentials_desc": "Permet de re-définir les credentials de Spotify via des requêtes GET !",
+  "get_credentials_name": "Vérifier les credentials Spotify",
+  "get_credentials_desc": "Permet de vérifier la valeur des credentials spotify via réponse GET !",
+  "pause_name": "Mettre la lecture en pause",
+  "pause_desc": "Ordonne la mise en pause de la lecture active !",
+  "resume_name": "Remettre la lecture en play",
+  "resume_desc": "Ordonne la mise en lecture de lecture active !",
+  "next_name": "Passer le morceau",
+  "next_desc": "Saute le morceau",
+  "previous_name": "Rejoue le morceau précédent",
+  "previous_desc": "Rejouer précédent",
+  "now_name": "Que joue maintenant",
+  "now_desc": "Renvoie objet actuel"
 }

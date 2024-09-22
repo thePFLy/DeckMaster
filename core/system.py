@@ -6,7 +6,8 @@ class System:
         self.system_data = self.read_file()
         self.language = self.read_file(file="config/config.ini")["LANGUAGE"]
 
-    def read_file(self, file: str = "infos.ini"):
+    @staticmethod
+    def read_file(file: str = "infos.ini"):
         final = {}
         with open(file=file, mode="r", encoding="utf-8") as file:
             data = file.readlines()
@@ -18,7 +19,8 @@ class System:
     def get_value(self, key: str):
         return self.system_data[key]
 
-    def load_trad(self, file: str):
+    @staticmethod
+    def load_trad(file: str):
         with open(file=file, mode="r", encoding="utf-8") as file:
             return load(file)
 

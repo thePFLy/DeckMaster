@@ -33,6 +33,8 @@ register(remove_import_references)
 )
 async def load_module(module_name: str):
     response = module.load(module=module_name)
+    app.openapi_schema = None
+    app.setup()
     return response
 
 
@@ -84,8 +86,3 @@ async def show_route():
     for route in app.routes:
         routes.append(route.path)
     return routes
-
-
-@app.get("/get_openapi")
-async def get_openapi():
-    return app.openapi()

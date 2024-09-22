@@ -8,13 +8,15 @@ class Modules:
     def __init__(self):
         self.loaded_modules = []
 
-    def list_modules_folder(self):
+    @staticmethod
+    def list_modules_folder():
         list_modules = []
         for module in scandir("modules/"):
             list_modules.append(module.name)
         return list_modules
 
-    def is_module_imported(self, module: str, log: bool = False):
+    @staticmethod
+    def is_module_imported(module: str, log: bool = False):
         result = []
         for module_name in modules:
             if module in module_name:
@@ -42,10 +44,8 @@ class Modules:
         else:
             return "MODULE_NOT_FOUND"
 
-    def unload(self, module: str):
-        self.table_modules["disabled"].remove(module)
-
-    def set_key(self, module: str, key: str, value: str):
+    @staticmethod
+    def set_key(module: str, key: str, value: str):
         with open(file=f"config/{module}.json", mode="r") as file:
             content = load(file)
         content[key] = value
@@ -53,7 +53,8 @@ class Modules:
             file.write(dumps(content, indent=2))
         return "KEY_HAS_BEEN_SET"
 
-    def credentials(self, module: str, key: str = None) -> dict or str:
+    @staticmethod
+    def credentials(module: str, key: str = None) -> dict or str:
         with open(file=f"config/{module}.json", mode="r") as file:
             if key is None:
                 return load(file)

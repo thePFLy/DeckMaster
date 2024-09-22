@@ -1,7 +1,13 @@
 from core.api import app
 from core.modules import Modules
 from modules.spotify.commands.state import State
+from modules.spotify.commands.now import Now
 from spotipy import Spotify, SpotifyOAuth
+from core.system import System
+
+
+def trad(key: str):
+    System().show_traduction(key=key, module="spotify")
 
 
 class SpotifySocket:
@@ -37,32 +43,41 @@ spotify.create_socket()
 controleur = State(spotify=spotify.socket)
 
 
-@app.get(path="/spotify/set_credentials", name="Re-définir les credentials Spotify", tags=["Spotify"])
+@app.get(
+    path="/spotify/set_credentials",
+    name=trad(key="set_credentials_name"),
+    description=trad(key="set_credentials_desc"),
+    tags=["Spotify"]
+)
 async def spotify_set_credentials(client_id: str, client_secret: str, callback_url: str):
-    """
-    Permet de re-définir les credentials de Spotify via des requêtes GET !
-    """
     module = Modules()
     module.module = "spotify"
-    module.set_key(key="client_id", value=client_id)
-    module.set_key(key="client_secret", value=client_secret)
-    module.set_key(key="callback_url", value=callback_url)
+    module.set_key(module="spotify", key="client_id", value=client_id)
+    module.set_key(module="spotify", key="client_secret", value=client_secret)
+    module.set_key(module="spotify", key="callback_url", value=callback_url)
     return {
         "response": "Success ! Credentials has been set !"
     }
 
 
-@app.get(path="/spotify/get_credentials", name="Vérifier les credentials Spotify", tags=["Spotify"])
+@app.get(
+    path="/spotify/get_credentials",
+    name=trad(key="get_credentials_name"),
+    description=trad(key="get_credentials_desc"),
+    tags=["Spotify"]
+)
 async def spotify_get_credentials():
-    """
-    Permet de vérifier la valeur des credentials spotify via réponse GET
-    """
     module = Modules()
     module.module = "spotify"
-    return module.credentials()
+    return module.credentials(module="spotify")
 
 
-@app.get(path="/spotify/status/pause", name="Mettre la lecture en pause", tags=["Spotify"])
+@app.get(
+    path="/spotify/status/pause",
+    name=trad(key="pause_name"),
+    description=trad(key="pause_desc"),
+    tags=["Spotify"]
+)
 async def spotify_pause():
     controleur.action(arg="pause")
     return {
@@ -70,7 +85,12 @@ async def spotify_pause():
     }
 
 
-@app.get(path="/spotify/status/resume", name="Mettre la lecture en lecture", tags=["Spotify"])
+@app.get(
+    path="/spotify/status/resume",
+    name=trad(key="resume_name"),
+    description=trad(key="resume_desc"),
+    tags=["Spotify"]
+)
 async def spotify_pause():
     controleur.action(arg="resume")
     return {
@@ -78,7 +98,12 @@ async def spotify_pause():
     }
 
 
-@app.get(path="/spotify/status/next", name="Passer au prochain morceau", tags=["Spotify"])
+@app.get(
+    path="/spotify/status/next",
+    name=trad(key="next_name"),
+    description=trad(key="next_desc"),
+    tags=["Spotify"]
+)
 async def spotify_pause():
     controleur.action(arg="skip")
     return {
@@ -86,9 +111,23 @@ async def spotify_pause():
     }
 
 
-@app.get(path="/spotify/status/previous", name="Réecouter le morceau précédent", tags=["Spotify"])
+@app.get(
+    path="/spotify/status/previous",
+    name=trad(key="previous_name"),
+    description=trad(key="previous_desc"),
+    tags=["Spotify"])
 async def spotify_pause():
     controleur.action(arg="previous")
     return {
         "message": "Réecouter le morceau précédent !"
     }
+
+
+@app.get(
+    path="/spotify/now",
+    name=trad(key="now_name"),
+    description=trad(key="now_desc"),
+    tags=["Spotify"]
+)
+async def spotify_now():
+    return Now(spotify=spotify.socket).now()
