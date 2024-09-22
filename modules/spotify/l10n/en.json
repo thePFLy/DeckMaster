@@ -1,5 +1,5 @@
 {
-  "setup_message": "Welcome to the initial setup of Spotify for ReDeck\nGo to https://developer.spotify.com/dashboard for creating an app.\nAlso don't forget to set a callback_url !\nFor more facility, set http://localhost:8000\nNext, define credentials with the query /spotify/set_credentials... Read /docs for more information...",
+  "setup_message": "Welcome to the initial setup of Spotify for ReDeck\nGo to https://developer.spotify.com/dashboard for creating an app.\nAlso don't forget to set a callback_url !\nFor more facility, set http://localhost:5000\nNext, define credentials with the query /spotify/set_credentials... Read /docs for more information...",
   "set_credentials_name": "Re-définir les credentials Spotify",
   "set_credentials_desc": "Permet de re-définir les credentials de Spotify via des requêtes GET !",
   "get_credentials_name": "Vérifier les credentials Spotify",

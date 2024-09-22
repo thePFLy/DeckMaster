@@ -3,6 +3,12 @@ from core.system import System
 
 trad = System().show_traduction
 
+
+def update_swagger():
+    app.openapi_schema = None
+    app.setup()
+
+
 # Variables
 app = FastAPI(
     title="ReDeck API v1",

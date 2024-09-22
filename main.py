@@ -1,10 +1,11 @@
 from core.modules import Modules
 from core.system import System
-from core.api import app
+from core.api import app, update_swagger
 from os import getpid, kill
 from signal import SIGTERM
 from atexit import register
 from sys import modules
+from uvicorn import run
 
 # Variables
 module = Modules()
@@ -33,8 +34,7 @@ register(remove_import_references)
 )
 async def load_module(module_name: str):
     response = module.load(module=module_name)
-    app.openapi_schema = None
-    app.setup()
+    update_swagger()
     return response
 
 
@@ -71,18 +71,7 @@ async def restart():
     description=trad(key="is_imported_desc"),
     tags=["Core"]
 )
-async def is_imported(module_name: str):
-    return module.is_module_imported(module=module_name, log=True)
+async def is_imported(module_name: str, details: bool = False):
+    return module.is_module_imported(module=module_name, log=details)
 
-
-@app.get(
-    path="/core/show_route",
-    name=trad(key="show_route_name"),
-    description=trad(key="show_route_desc"),
-    tags=["Core"]
-)
-async def show_route():
-    routes = []
-    for route in app.routes:
-        routes.append(route.path)
-    return routes
+run(app=app)

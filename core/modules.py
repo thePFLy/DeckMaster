@@ -7,6 +7,7 @@ from sys import modules
 class Modules:
     def __init__(self):
         self.loaded_modules = []
+        self.in_setup_mode = []
 
     @staticmethod
     def list_modules_folder():
@@ -16,7 +17,9 @@ class Modules:
         return list_modules
 
     @staticmethod
-    def is_module_imported(module: str, log: bool = False):
+    def is_module_imported(module: str, log: bool = False, setup_mode: bool = False):
+        if setup_mode:
+            return False
         result = []
         for module_name in modules:
             if module in module_name:
@@ -30,17 +33,21 @@ class Modules:
             return len(result) > 0
 
     def load(self, module: str):
-        if self.is_module_imported(module=module):
+        if self.is_module_imported(module=module, setup_mode=module in self.in_setup_mode):
             return "MODULE_ALREADY_LOADED"
         elif module in self.list_modules_folder():
             setup = import_module(f"modules.{module}.setup")
             if getattr(setup, "try_init")(self.credentials(module="spotify")):
-                import_module(f"modules.{module}")
+                init = import_module(f"modules.{module}")
+                getattr(init, "load")()
+                if module in self.in_setup_mode:
+                    self.in_setup_mode.remove(module)
                 self.loaded_modules.append(module)
                 return "LOADED"
             else:
-                print("????")
-                return getattr(setup, "setup")
+                if module not in self.in_setup_mode:
+                    self.in_setup_mode.append(module)
+                return getattr(setup, "setup")()
         else:
             return "MODULE_NOT_FOUND"
 
