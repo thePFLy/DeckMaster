@@ -1,124 +1,149 @@
 class Playlists:
-    def __init__(self, arg, data, spotify, account):
-        self.arg = arg
-        self.spotify = spotify
-        self.data = data
-        self.playlist_name = None
-        self.account = account
+    def __init__(self, spotify):
+        self.spotify = spotify.socket
+        self.data = self.spotify.current_user_playing_track()
 
-        if type(self.arg).__name__ == 'list':
-            if self.arg[0] == 'favorite':
-                self.playlist_name = ' '.join(self.arg[1:])
-                self.add_to_playlist()
-            elif self.arg[0] == 'playlist' and self.arg[1] in ['create', 'delete', 'list']:
-                if self.arg[1] == 'create':
-                    if len(self.arg) < 3:
-                        print("You need to give a name to the playlist to create.\n")
-                        return None
-                    else:
-                        self.playlist_name = ' '.join(self.arg[2:])
-                        self.create()
-                elif self.arg[1] == 'list':
-                    self.list()
-                elif self.arg[1] == 'delete':
-                    self.playlist_name = ' '.join(self.arg[2:])
-                    self.delete()
+    def list_playlists(self, details: bool):
+        if details:
+            return self.spotify.current_user_playlists()['items']
+        else:
+            result = {}
+            for [index, playlist] in enumerate(self.spotify.current_user_playlists()["items"], 1):
+                result[str(index)] = {
+                    "name": playlist["name"],
+                    "id": playlist["id"],
+                    "public": playlist["public"]
+                }
+            return result
+
+    @staticmethod
+    def make_artists_list(artist_dict: dict):
+        if len(artist_dict) == 1:
+            return artist_dict[0]["name"]
+        else:
+            result = ""
+            for artists in artist_dict:
+                result += f"{artists['name']}, "
+            return result[:-2]
+
+    def list_playlist_content(self, playlist_id: str, details: bool):
+        if details:
+            return self.spotify.playlist_items(playlist_id=playlist_id)
+        else:
+            result = {}
+            for [index, track] in enumerate(self.spotify.playlist_items(playlist_id=playlist_id)["items"], 1):
+                result[str(index)] = {
+                    "added_by": track["added_by"]["id"],
+                    "explicit": track["track"]["explicit"],
+                    "title": track["track"]["name"],
+                    "album_name": track["track"]["album"]["name"],
+                    "release": str(track["track"]["album"]["release_date"]).split("-")[0],
+                    "album_image": track["track"]["album"]["images"][0]["url"],
+                    "artists": self.make_artists_list(artist_dict=track["track"]["artists"]),
+                    "duration": f"{str(int(track['track']['duration_ms'] / 1000 / 60)).zfill(2)}"
+                                f":"
+                                f"{str(int(track['track']['duration_ms'] / 1000 % 60)).zfill(2)}"
+                }
+            return result
+
+    def get_playlist_id(self, playlist_name: str):
+        for playlist_index in self.list_playlists(details=False):
+            if playlist_name == self.list_playlists(details=False)[playlist_index]["name"]:
+                return self.list_playlists(details=False)[playlist_index]["id"]
+
+    def get_playlist_name(self, playlist_id: str):
+        for playlist_index in self.list_playlists(details=False):
+            if playlist_id == self.list_playlists(details=False)[playlist_index]["id"]:
+                return self.list_playlists(details=False)[playlist_index]["name"]
+
+    def is_present_in_playlist(self, playlist_id: str):
+        for track in self.spotify.playlist_items(playlist_id=playlist_id, limit=None)['items']:
+            if track['track']['id'] == self.data["item"]["id"]:
+                return True
+
+    def get_index_track_in_playlist(self, playlist_id: str):
+        for [index, track] in enumerate(self.spotify.playlist_items(playlist_id=playlist_id, limit=None)['items']):
+            if track['track']['id'] == self.data["item"]["id"]:
+                return index
+
+    def playlist_exist(self, playlist_name: str):
+        for playlist in self.spotify.current_user_playlists()["items"]:
+            if playlist_name == playlist["name"]:
+                return True
+
+    def delete_from_playlist(self, playlist_id: str):
+        if self.playlist_exist(playlist_name=self.get_playlist_name(playlist_id=playlist_id)):
+            if self.is_present_in_playlist(playlist_id=playlist_id):
+                self.spotify.playlist_remove_specific_occurrences_of_items(
+                    playlist_id=playlist_id,
+                    items=[
+                        {
+                            "uri": self.data["item"]["id"],
+                            "positions": self.get_index_track_in_playlist(playlist_id=playlist_id)
+                        }
+                    ]
+                )
+                return "TRACK_SUCCESS_DELETED"
             else:
-                print(f'{" ".join(arg)} is not a known command...')
-                return None
-        else:
-            if self.arg == 'favorite':
-                print(f'{arg} need as second argument a playlist name.\n')
-            elif self.arg == 'playlist':
-                print(f'{arg} need as second argument an action instruction.\n')
+                return "TRACK_NOT_IN_PLAYLIST"
 
-    def playlist(self, playlist_name):
-        response = {
-            "response": None,
-            "id": None
-        }
-        for playlist in self.spotify.current_user_playlists()['items']:
-            if playlist['name'] == playlist_name:
-                response['response'] = True
-                response['id'] = playlist['id']
-                return response
-        response['response'] = False
-        return response
-
-    def in_playlist(self, playlist_id, uri):
-        response = {
-            "response": None,
-            "position": None
-        }
-        for [index, track] in enumerate(self.spotify.playlist_items(playlist_id, limit=None)['items']):
-            if track['track']['uri'] == uri:
-                response['response'] = True
-                response['position'] = index
-                return response
-        else:
-            response['response'] = False
-            return response
-
-    def add_to_playlist(self):
-        if self.arg == 'favorite':
-            print("You need to give a playlist name with the favorite command...")
-            return False
-
-        elif len(self.arg) < 3:
-            if self.playlist(self.playlist_name)['response']:
-                if self.in_playlist(self.playlist(self.playlist_name)['id'], self.data['item']['uri'])['response']:
-                    print(f'{self.data["item"]["name"]} is already in {self.playlist_name}...')
-                    if input(f'Remove it from {self.playlist_name} (y/Y): ').capitalize() == 'Y':
-                        self.spotify.playlist_remove_specific_occurrences_of_items(
-                            self.playlist(self.playlist_name)['id'],
-                            [{
-                                "uri": self.data['item']['id'],
-                                "positions": [
-                                    int(self.in_playlist(self.playlist(self.playlist_name)['id'],
-                                                         self.data['item']['uri'])['position'])
-                                ]
-                            }]
-                        )
-                        return print(f'{self.data["item"]["name"]} has been removed from {self.playlist_name}...')
-                    else:
-                        print(f'{self.data["item"]["name"]} has not been removed from {self.playlist_name}...')
-                        return None
-                else:
-                    print(f'{self.data["item"]["name"]} is not added in {self.playlist_name}...')
-                    if input(f'Add it in {self.playlist_name} (y/Y): ').capitalize() == 'Y':
-                        self.spotify.playlist_add_items(self.playlist(self.playlist_name)['id'],
-                                                        [self.data['item']['uri']])
-                        return print(f'{self.data["item"]["name"]} has been added in {self.playlist_name}...')
-                    else:
-                        print(f'{self.data["item"]["name"]} has not been added in {self.playlist_name}...')
-                        return None
+    def add_to_playlist(self, playlist_id: str):
+        if self.playlist_exist(playlist_name=self.get_playlist_name(playlist_id=playlist_id)):
+            if not self.is_present_in_playlist(playlist_id=playlist_id):
+                self.spotify.playlist_add_items(
+                    playlist_id=playlist_id,
+                    items=[self.data["item"]["uri"]]
+                )
+                return "TRACK_SUCCESS_ADDED"
             else:
-                print(f"The playlist {self.playlist_name} don't exist...")
-                return None
-
-    def create(self):
-        if self.playlist(self.playlist_name)['response']:
-            print(f'Playlist: {self.playlist_name} already exist.\nPlease choose an another name...')
-            return None
+                return "TRACK_ALREADY_IN_PLAYLIST"
         else:
-            public = input('Do you want that this playlist become public (y/Y): ').capitalize() == 'Y'
-            print(f"Playlist {self.playlist_name} created...")
-            self.spotify.user_playlist_create(name=self.playlist_name, public=public,
-                                              user=self.account['id'])
+            return "PLAYLIST_NOT_EXIST"
 
-    def list(self):
-        for [index, playlist] in enumerate(self.spotify.current_user_playlists()['items'], 1):
-            print(f"{str(index).zfill(2)}) {playlist['name']}")
-
-    def delete(self):
-        if self.playlist(self.playlist_name)['response']:
-            id_playlist = self.playlist(self.playlist_name)['id']
-            if not id:
-                print(f"{self.playlist_name} has not been found...")
-                return None
-            self.spotify.current_user_unfollow_playlist(id_playlist)
-            print(f"Playlist {self.playlist_name} deleted...")
-            return None
+    def create_playlist(self, name: str, public: bool):
+        if not self.playlist_exist(playlist_name=name):
+            self.spotify.user_playlist_create(
+                name=name,
+                public=public,
+                user=self.spotify.me()["id"]
+            )
+            return "PLAYLIST_SUCCESS_CREATED"
         else:
-            print(f"Playlist: {self.playlist_name} don't exist.\nPlease use: playlist list !")
-            return None
+            return "PLAYLIST_NAME_ALREADY_EXIST"
+
+    def delete_playlist(self, playlist_id: str):
+        if self.playlist_exist(playlist_name=self.get_playlist_name(playlist_id=playlist_id)):
+            self.spotify.current_user_unfollow_playlist(
+                playlist_id=playlist_id
+            )
+            return "PLAYLIST_SUCCESS_CREATED"
+        else:
+            return "PLAYLIST_NOT_EXIST"
+
+    def edit_playlist(self, playlist_id: str, name: str, public: bool):
+        if self.playlist_exist(playlist_name=self.get_playlist_name(playlist_id=playlist_id)):
+            self.spotify.user_playlist_change_details(
+                playlist_id=playlist_id,
+                user=self.spotify.me()["id"],
+                name=name,
+                public=public
+            )
+            return "PLAYLIST_SUCCESS_UPDATED"
+        else:
+            return "PLAYLIST_NOT_EXIST"
+
+    def queue(self, details: bool):
+        if details:
+            return self.spotify.queue()
+        else:
+            result = {}
+            for [index, track] in enumerate(self.spotify.queue()["queue"], 1):
+                result[str(index)] = {
+                    "title": track["name"],
+                    "artists": self.make_artists_list(artist_dict=track["artists"]),
+                    "album": track["album"]["name"],
+                    "duration": f"{str(int(track['duration_ms'] / 1000 / 60)).zfill(2)}"
+                                f":"
+                                f"{str(int(track['duration_ms'] / 1000 % 60)).zfill(2)}"
+                }
+            return result

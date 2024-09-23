@@ -1,12 +1,10 @@
 class Userinfo:
-    def __init__(self, account):
-        self.account = account
-        self.userinfo
+    def __init__(self, spotify):
+        self.spotify = spotify.socket
 
-    @property
     def userinfo(self):
-        print("\033[4mUser informations:\033[0m\n"
-              f"User: {self.account['display_name']}\n"
-              f"Image: {self.account['images'][0]['url']}\n"
-              f"Type of account: {'Free' if self.account['product'] == 'free' else 'Premium'}")
-        return None
+        return {
+            "user_display": self.spotify.me()['display_name'],
+            "picture": self.spotify.me()['images'][0]['url'],
+            "account_type": 'Free' if self.spotify.me()['product'] == 'free' else 'Premium'
+        }

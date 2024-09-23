@@ -1,6 +1,6 @@
 class State:
     def __init__(self, spotify: object):
-        self.spotify = spotify
+        self.spotify = spotify.socket
 
     def action(self, arg: str):
         if arg == 'pause':

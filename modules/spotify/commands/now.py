@@ -1,7 +1,7 @@
 class Now:
     def __init__(self, spotify):
-        self.spotify = spotify
-        self.data = spotify.current_user_playing_track()
+        self.spotify = spotify.socket
+        self.data = self.spotify.current_user_playing_track()
 
     def get_artists(self):
         artists = []

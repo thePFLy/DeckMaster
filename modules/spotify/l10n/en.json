@@ -13,5 +13,13 @@
   "previous_name": "Rejoue le morceau précédent",
   "previous_desc": "Rejouer précédent",
   "now_name": "Que joue maintenant",
-  "now_desc": "Renvoie objet actuel"
+  "now_desc": "Renvoie objet actuel",
+  "playlist_list_name": "",
+  "playlist_list_desc": "",
+  "playlist_show_content_name": "",
+  "playlist_show_content_desc": "",
+  "playlist_add_track_name": "",
+  "playlist_add_track_desc": "",
+  "playlist_delete_track_name": "",
+  "playlist_delete_track_desc": ""
 }
