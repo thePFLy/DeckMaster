@@ -1,0 +1,105 @@
+@font-face {
+    font-family: 'Spotify';
+    src: url('./font/circular.ttf');
+}
+
+* {
+    font-family: 'Spotify', Arial, serif;
+}
+
+@keyframes rotatePicture {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("https://i.scdn.co/image/ab67616d0000b273c5a22b35a6476f782bd44eab");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    filter: blur(8px) brightness(35%);
+    z-index: -1;
+}
+
+.spotify_info h1 {
+    color: #00eb61;
+    font-size: 70px;
+}
+
+.spotify_info p {
+    color: #dbdbdb;
+    font-size: 45px;
+    font-style: italic;
+}
+
+.cover {
+    width: 55%;
+    border-radius: 50%;
+    animation: rotatePicture 15s linear infinite;
+}
+
+.spotify_cover {
+    width: 30%;
+    float: left;
+}
+
+.spotify_info {
+    width: 70%;
+    float: right;
+    position: relative;
+    left: -5%;
+}
+
+.spotify {
+    position: relative;
+    left: 15%;
+    top: 20vh;
+}
+
+.spotify_controler {
+    position: relative;
+    left: 4%;
+    top: 25vh;
+}
+
+.button_sp {
+    scale: 600%;
+    color: #00eb61;
+}
+
+.button_sp:hover {
+    color: white;
+}
+
+.next {
+    position: relative;
+    left: 10%;
+}
+
+.previous {
+    transform: rotate(180deg);
+    position: relative;
+    right: 10%;
+}
+
+.like {
+    position: relative;
+    right: 30%;
+    color: red;
+}
+
+.add {
+    position: relative;
+    left: 30%;
+}
