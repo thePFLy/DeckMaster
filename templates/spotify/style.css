@@ -5,15 +5,9 @@
 
 * {
     font-family: 'Spotify', Arial, serif;
-}
-
-@keyframes rotatePicture {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body::before {
@@ -32,49 +26,40 @@ body::before {
     z-index: -1;
 }
 
-.spotify_info h1 {
-    color: #00eb61;
-    font-size: 70px;
-}
-
-.spotify_info p {
-    color: #dbdbdb;
-    font-size: 45px;
-    font-style: italic;
-}
-
-.cover {
-    width: 55%;
+/* Image de couverture Spotify */
+.spotify_cover {
+    width: 15%;
+    margin-left: 10%;
     border-radius: 50%;
     animation: rotatePicture 15s linear infinite;
 }
 
-.spotify_cover {
-    width: 30%;
-    float: left;
-}
-
 .spotify_info {
+    position: relative;
+    top: 4vh;
     width: 70%;
     float: right;
-    position: relative;
-    left: -5%;
 }
 
-.spotify {
-    position: relative;
-    left: 15%;
-    top: 20vh;
+.spotify_info h1 {
+    color: #00eb61;
+    font-size: 55px;
 }
 
+.spotify_info p {
+    color: #dbdbdb;
+    font-size: 30px;
+    font-style: italic;
+}
+
+/* Contrôles de Spotify */
 .spotify_controler {
-    position: relative;
-    left: 4%;
-    top: 25vh;
+    margin-left: 10%;
 }
 
-.button_sp {
-    scale: 600%;
+.spotify_controler i {
+    font-size: 3.5rem;
+    padding-right: 7%;
     color: #00eb61;
 }
 
@@ -82,24 +67,39 @@ body::before {
     color: white;
 }
 
-.next {
-    position: relative;
-    left: 10%;
+/* Position du slider */
+.position_slider {
+    margin-top: 2rem;
+    margin-left: 10%;
+    margin-right: auto;
+    display: inline-flex;
+    width: 100%;
 }
 
-.previous {
-    transform: rotate(180deg);
-    position: relative;
-    right: 10%;
+.position_slider input {
+    width: 42%;
+    margin: 0 0.5%;
 }
 
-.like {
-    position: relative;
-    right: 30%;
-    color: red;
+.slider {
+    background: #ddd;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 5px;
 }
 
-.add {
-    position: relative;
-    left: 30%;
+.slider:hover {
+    opacity: 1;
+}
+
+
+/* Animation pour l'image */
+@keyframes rotatePicture {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }

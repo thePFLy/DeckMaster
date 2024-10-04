@@ -1,6 +1,7 @@
 from core.modules import Modules
 from core.system import System
 from core.api import app, update_swagger
+from fastapi.responses import FileResponse, Response
 from os import getpid, kill
 from signal import SIGTERM
 from atexit import register
@@ -73,5 +74,36 @@ async def restart():
 )
 async def is_imported(module_name: str, details: bool = False):
     return module.is_module_imported(module=module_name, log=details)
+
+
+@app.get(
+    path="/core/css",
+    name=trad(key="css_name"),
+    description=trad(key="css_desc"),
+    tags=["Core"]
+)
+async def get_css(filename: str, module: str = None):
+    return Response(content=system.get_css(module=module, filename=filename), media_type="text/css")
+
+
+@app.get(
+    path="/core/html",
+    name=trad(key="html_name"),
+    description=trad(key="html_desc"),
+    tags=["Core"]
+)
+async def get_css(filename: str, module: str = None):
+    return Response(content=system.get_html(module=module, filename=filename), media_type="text/html")
+
+
+@app.get(
+    path="/core/image",
+    name=trad(key="image_name"),
+    description=trad(key="image_desc"),
+    tags=["Core"]
+)
+async def get_css(filename: str, module: str = None, extention: str = "png"):
+    return FileResponse(path=system.get_image(module=module, filename=filename, extention=extention))
+
 
 run(app=app)

@@ -1,4 +1,4 @@
-from json import load
+from json import load, dumps
 
 
 class System:
@@ -26,6 +26,54 @@ class System:
 
     def show_traduction(self, key: str, module: str = None):
         if module is None:
-            return self.load_trad(file=f"l10n/{self.language}.json")[key]
+            try:
+                return self.load_trad(file=f"l10n/{self.language}.json")[key]
+            except KeyError:
+                self.create_key(key=key, module=module)
         else:
-            return self.load_trad(file=f"modules/{module}/l10n/{self.language}.json")[key]
+            try:
+                return self.load_trad(file=f"modules/{module}/l10n/{self.language}.json")[key]
+            except KeyError:
+                self.create_key(key=key, module=module)
+
+    def create_key(self, key: str, module: str = None):
+        if module is None:
+            data = self.load_trad(file=f"l10n/{self.language}.json")
+        else:
+            data = self.load_trad(file=f"modules/{module}/l10n/{self.language}.json")
+        data[key] = ""
+        self.save_trad(data=data, module=module)
+
+    def save_trad(self, data: dict, module: str = None):
+        if module is None:
+            with open(file=f"l10n/{self.language}.json", mode="w", encoding="utf-8") as new_data:
+                new_data.write(dumps(data, indent=2))
+        else:
+            with open(file=f"modules/{module}/l10n/{self.language}.json", mode="w", encoding="utf-8") as new_data:
+                new_data.write(dumps(data, indent=2))
+
+    @staticmethod
+    def get_css(module: str, filename: str):
+        if module is None:
+            filepath = f"templates/styles/{filename}.css"
+        else:
+            filepath = f"templates/{module}/{filename}.css"
+        with open(file=filepath, mode="r", encoding="utf-8") as css:
+            return css.read()
+
+    @staticmethod
+    def get_html(module: str, filename: str):
+        if module is None:
+            filepath = f"templates/styles/{filename}.html"
+        else:
+            filepath = f"templates/{module}/{filename}.html"
+        with open(file=filepath, mode="r", encoding="utf-8") as html:
+            return html.read()
+
+    @staticmethod
+    def get_image(module: str, filename: str, extention: str):
+        if module is None:
+            filepath = f"templates/styles/{filename}.{extention}"
+        else:
+            filepath = f"templates/{module}/icon/{filename}.{extention}"
+        return filepath

@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="fr">
-<link rel="stylesheet" type="text/css" href="style.css">
-<link rel="stylesheet" type="text/css" href="../styles/redeck_bar.css">
+<link rel="stylesheet" type="text/css" href="/core/css?filename=style&module=spotify">
+<link rel="stylesheet" type="text/css" href="/core/css?filename=redeck_bar">
 <script src="https://kit.fontawesome.com/e5195067f8.js" crossorigin="anonymous"></script>
 <head>
     <meta charset="UTF-8">
     <title>Spotify for ReDeck</title>
 </head>
 <body>
+
 <header>
     <div class="header_software left">
-        <img class="header_logo" src="icon/spotify.png">
+        <img class="header_logo" src="/core/image?filename=spotify&module=spotify&extention=png">
         <p>Spotify</p>
     </div>
     <p class="right">12:09</p>
 </header>
-<div class="spotify">
-    <div class="spotify_cover">
-        <img class="cover" src="https://i.scdn.co/image/ab67616d0000b273c5a22b35a6476f782bd44eab"><
-    </div>
+<div class="main_view">
+    <img class="spotify_cover" src="https://i.scdn.co/image/ab67616d0000b273c5a22b35a6476f782bd44eab">
+
     <div class="spotify_info">
         <h1>Kompa Pasion</h1>
         <p>Kompa Pasion - 2022</p>
         <p>фрози</p>
     </div>
+
+    <div class="position_slider">
+        <p>1m25</p>
+        <input type="range" value="20">
+        <p>3m40</p>
+    </div>
+
     <div class="spotify_controler">
         <i class="button_sp fa-solid fa-heart like"></i>
         <i class="button_sp fa-solid fa-forward previous"></i>
         <i class="button_sp fa-solid fa-circle-play"></i>
         <i class="button_sp fa-solid fa-forward next"></i>
-        <i class="button_sp fa-solid fa-plus add"></i>
+        <i class="button_sp fa-solid fa-volume-high vol"></i>
     </div>
 </div>
 </body>
