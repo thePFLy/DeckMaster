@@ -21,6 +21,8 @@ header {
 .header_logo {
     width: 3.5%;
     padding-right: 1%;
+    position: relative;
+    top: 0.7vh;
 }
 
 header * {

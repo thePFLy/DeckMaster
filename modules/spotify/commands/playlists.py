@@ -144,6 +144,7 @@ class Playlists:
                     "album": track["album"]["name"],
                     "duration": f"{str(int(track['duration_ms'] / 1000 / 60)).zfill(2)}"
                                 f":"
-                                f"{str(int(track['duration_ms'] / 1000 % 60)).zfill(2)}"
+                                f"{str(int(track['duration_ms'] / 1000 % 60)).zfill(2)}",
+                    "url_cover": track['album']['images'][0]["url"]
                 }
             return result

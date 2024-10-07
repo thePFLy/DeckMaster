@@ -14,7 +14,6 @@ def load():
 
     class SpotifySocket:
         def __init__(self):
-            print("Module Spotify initialisé")
             self.socket = None
 
         def create_socket(self):
@@ -41,12 +40,6 @@ def load():
 
     spotify = SpotifySocket()
     spotify.create_socket()
-    temp_vars = {
-        "muted": {
-            "toggle": False,
-            "level": 0
-        }
-    }
 
     @app.get(
         path="/spotify/status/pause",
@@ -55,7 +48,7 @@ def load():
         tags=["Spotify"]
     )
     async def spotify_pause():
-        State(spotify=spotify).action(arg="pause")
+        State(spotify=spotify).pause()
         return {
             "message": "Lecture mise en pause !"
         }
@@ -66,8 +59,8 @@ def load():
         description=trad(key="resume_desc"),
         tags=["Spotify"]
     )
-    async def spotify_pause():
-        State(spotify=spotify).action(arg="resume")
+    async def spotify_resume():
+        State(spotify=spotify).resume()
         return {
             "message": "Lecture remise en lecture !"
         }
@@ -78,8 +71,8 @@ def load():
         description=trad(key="next_desc"),
         tags=["Spotify"]
     )
-    async def spotify_pause():
-        State(spotify=spotify).action(arg="skip")
+    async def spotify_next():
+        State(spotify=spotify).skip()
         return {
             "message": "Passer au prochain morceau !"
         }
@@ -89,10 +82,22 @@ def load():
         name=trad(key="previous_name"),
         description=trad(key="previous_desc"),
         tags=["Spotify"])
-    async def spotify_pause():
-        State(spotify=spotify).action(arg="previous")
+    async def spotify_previous():
+        State(spotify=spotify).previous()
         return {
             "message": "Réecouter le morceau précédent !"
+        }
+
+    @app.get(
+        path="/spotify/status/seek",
+        name=trad(key="seek_name"),
+        description=trad(key="previous_desc"),
+        tags=["Spotify"]
+    )
+    async def seek(seconds: str):
+        State(spotify=spotify).change_position(seconds)
+        return {
+            "message": "Déplacement effectué"
         }
 
     @app.get(

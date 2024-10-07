@@ -2,18 +2,6 @@ class State:
     def __init__(self, spotify: object):
         self.spotify = spotify.socket
 
-    def action(self, arg: str):
-        if arg == 'pause':
-            return self.pause()
-        elif arg == 'resume':
-            return self.resume()
-        elif arg == 'skip':
-            return self.skip()
-        elif arg == 'previous':
-            return self.previous()
-        else:
-            return print(f"{arg} don't exist !")
-
     def is_playing(self):
         return self.spotify.current_user_playing_track()['is_playing']
 
@@ -28,3 +16,7 @@ class State:
 
     def previous(self):
         return self.spotify.previous_track()
+
+    def change_position(self, seconds: int):
+        sec = int(seconds)
+        return self.spotify.seek_track(position_ms=int(sec * 1000))
