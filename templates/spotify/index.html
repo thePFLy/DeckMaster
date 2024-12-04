@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<link rel="stylesheet" type="text/css" href="/core/css?filename=style&module=spotify">
+<link rel="stylesheet" type="text/css" href="/core/css?filename=redeck_bar">
+<script src="https://kit.fontawesome.com/e5195067f8.js" crossorigin="anonymous"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>Spotify for ReDeck</title>
+</head>
+<body>
+
+<header>
+    <div class="header_software left">
+        <img class="header_logo" src="/core/image?filename=spotify&module=spotify&extention=png">
+        <p>Spotify</p>
+    </div>
+    <p id="time_deck" class="right"></p>
+</header>
+<div class="main_view">
+    <div id="main_infos">
+        <img id="album_url" class="spotify_cover" src="">
+        <div class="spotify_info">
+            <h1 id="title"></h1>
+            <p id="album"></p>
+            <p id="artist"></p>
+        </div>
+    </div>
+
+    <div class="position_slider">
+        <p id="time"></p>
+        <input id="time_now" type="range" onchange="change_time(this)">
+        <p id="time_end"></p>
+    </div>
+
+    <div class="spotify_controler">
+        <i class="button_sp fa-solid fa-heart like"></i>
+        <i class="button_sp fa-solid fa-forward previous" onclick="fetch('/spotify/status/previous')"></i>
+        <i id="pause_resume" class="button_sp fa-solid fa-circle-play" onclick="switch_status()"></i>
+        <i class="button_sp fa-solid fa-forward next" onclick="fetch('/spotify/status/next')"></i>
+        <i class="button_sp fa-solid fa-volume-high vol" onclick="mute()"></i>
+        <i class="button_sp fa-solid fa-bars"></i>
+    </div>
+</div>
+<div class="queue">
+</div>
+</body>
+</html>
+<script>
+    let last_title = undefined;
+
+    async function mute() {
+        const data = await get_now_info();
+        const element = document.getElementsByClassName("vol")[0];
+        if (data.muted === true) {
+            await fetch("/spotify/volume/set_level?level_vol=70");
+            element.classList.remove("fa-volume-off");
+            element.classList.add("fa-volume-high");
+        } else {
+            await fetch("/spotify/volume/set_level?level_vol=0");
+            element.classList.remove("fa-volume-high");
+            element.classList.add("fa-volume-off");
+        }
+    }
+
+    async function get_now_info() {
+        const resp = await fetch("/spotify/now");
+        return resp.json();
+    }
+
+    async function get_queue() {
+        const resp = await fetch("/spotify/queue?details=false");
+        return resp.json();
+    }
+
+    function set_text(id, data) {
+        document.getElementById(id).innerText = data;
+    }
+
+    function set_cover(id, data) {
+        document.getElementById(id).src = data;
+    }
+
+    function setBackgroundImage(url) {
+        const style = document.createElement('style');
+        style.innerHTML = `
+            body::before {
+                background-image: url('${url}') !important;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function set_cursor_position(data) {
+        const element = document.getElementById("time_now");
+        element.value = data;
+    }
+
+    async function update_page() {
+        const new_data = await get_now_info();
+        if (last_title !== new_data.title) {
+            last_title = new_data.title;
+            set_text("title", new_data.title);
+            set_text("album", new_data.album);
+            set_text("artist", new_data.artist);
+            set_cover("album_url", new_data.url_cover);
+            set_text("time_end", new_data.length);
+            setBackgroundImage(new_data.url_cover);
+            await create_queue();
+        }
+        set_text("time", new_data.progress);
+        set_cursor_position(new_data.percentage);
+        set_text("time_deck", `${new Date().getHours()}:${new Date().getMinutes()}`);
+    }
+
+    function convertirEnSecondes(temps) {
+        const [minutes, secondes] = temps.split(':').map(Number);
+        return minutes * 60 + secondes;
+    }
+
+    async function change_time(slider) {
+        const new_data = await get_now_info();
+        const slider_value = slider.value;
+        let seconds = ((convertirEnSecondes(new_data.length) / 100) * slider_value);
+        await fetch(`/spotify/status/seek?seconds=${Math.round(seconds)}`);
+    }
+
+    async function switch_status() {
+        let now = await get_now_info();
+        if (now.status === true) {
+            let element = document.getElementById("pause_resume");
+            element.classList.add("fa-circle-play");
+            element.classList.remove("fa-circle-pause");
+
+            await fetch("/spotify/status/pause");
+        } else {
+            let element = document.getElementById("pause_resume");
+            element.classList.add("fa-circle-pause");
+            element.classList.remove("fa-circle-play");
+            await fetch("/spotify/status/resume");
+        }
+    }
+
+    async function create_queue() {
+        let queue = await get_queue();
+        let html = "";
+        for (let index in queue) {
+            html += `<li class="queue_preview"><img src="${queue[index].url_cover}"><div class="queue_info"><h1>${queue[index].title} - ${queue[index].artists}</h1><p>${queue[index].album}</p><p>${queue[index].duration}</p></div></li>`;
+        }
+        document.getElementsByClassName("queue")[0].innerHTML = html;
+    }
+
+    setInterval(update_page, 1000);
+
+
+</script>

@@ -1,0 +1,38 @@
+/*  CSS par défaut pour une appli avec barre */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: none;
+    position: relative;
+}
+
+header {
+    color: white;
+    background-color: black;
+    padding: 10px 20px;
+    overflow: hidden;
+    font-size: 25px;
+}
+
+.header_logo {
+    width: 3.5%;
+    padding-right: 1%;
+    position: relative;
+    top: 0.7vh;
+}
+
+header * {
+    display: inline;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}

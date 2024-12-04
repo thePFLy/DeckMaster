@@ -1,0 +1,159 @@
+@font-face {
+    font-family: 'Spotify';
+    src: url('./font/circular.ttf');
+}
+
+* {
+    font-family: 'Spotify', Arial, serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: none;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    filter: blur(8px) brightness(35%);
+    z-index: -1;
+}
+
+/* Main & Queue Disposition */
+.main_view {
+    float: left;
+    width: 60%;
+    padding-left: 5%;
+    padding-top: 15vh;
+}
+
+.queue {
+    float: right;
+    width: 30%;
+    height: 92.5vh;
+    background-color: rgba(30, 30, 30, 0.62);
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* Pour Internet Explorer et Edge */
+    scrollbar-width: none; /* Pour Firefox */
+}
+
+.queue::-webkit-scrollbar {
+    display: none;
+}
+
+.queue_preview {
+    list-style-type: none;
+    padding: 2vh 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.queue_preview img {
+    float: left;
+    width: 17%;
+    border-radius: 50%;
+}
+
+.queue_info h1 {
+    font-size: 15px;
+    color: #00eb61;
+}
+
+.queue_info {
+    float: right;
+    margin-left: 2%;
+    width: 70%;
+
+}
+
+/* Image de couverture Spotify */
+.spotify_cover {
+    width: 30%;
+    border-radius: 50%;
+    animation: rotatePicture 15s linear infinite;
+}
+
+.spotify_info {
+    margin-left: 5%;
+    float: right;
+    width: 70%;
+}
+
+.spotify_info h1 {
+    color: #00eb61;
+    font-size: 40px;
+}
+
+.spotify_info p {
+    color: #dbdbdb;
+    font-size: 30px;
+    font-style: italic;
+}
+
+/* Contrôles de Spotify */
+.spotify_controler i {
+    font-size: 3rem;
+    padding: 0 4.4%;
+    color: #00eb61;
+}
+
+.spotify_controler {
+    margin-top: 7%;
+    margin-left: -3.5%;
+}
+
+.button_sp:hover {
+    color: white;
+}
+
+.previous {
+    transform: rotate(180deg);
+}
+
+/* Position du slider */
+.position_slider {
+    display: inline-flex;
+    width: 100%;
+}
+
+.position_slider input {
+    width: 81%;
+    margin: 0 1%;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.position_slider, .spotify_controler {
+    position: relative;
+    left: 5%;
+    top: 23vh;
+}
+
+/* */
+#main_infos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Animation pour l'image */
+@keyframes rotatePicture {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
